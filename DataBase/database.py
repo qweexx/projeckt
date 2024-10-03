@@ -105,6 +105,16 @@ class Database:
         self.get_data(sql_insert_client, 'client', data)
         self.con.commit()
 
+    def get_table_data(self, name_table):
+        data = self.con.execute(f'''SELECT * FROM {name_table}''')
+        data = data.fetchall()
+        return data
+
+    def get_username_password(self):
+        data = self.con.execute('''SELECT username, password FROM Employee''')
+        data = data.fetchall()
+        return data
+
 
 data = {
     'employee': [
@@ -138,5 +148,5 @@ data = {
 }
 
 db = Database('my_database.db')
-db.create_table()
-db.fill_table(data)
+# db.create_table()
+# db.fill_table(data)
