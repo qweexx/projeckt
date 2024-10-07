@@ -1,18 +1,26 @@
-
 from DataBase.database import db
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
+import functools
 
+from main_menu import Ui_MainWindow
 
-
+login = False
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(1349, 856)
+        Dialog.setEnabled(True)
+        Dialog.resize(1415, 856)
+        Dialog.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        Dialog.setMouseTracking(True)
         self.frame = QtWidgets.QFrame(Dialog)
-        self.frame.setGeometry(QtCore.QRect(439, 219, 301, 251))
+        self.frame.setEnabled(True)
+        self.frame.setGeometry(QtCore.QRect(540, 260, 301, 251))
+        self.frame.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.frame.setMouseTracking(False)
+        self.frame.setAutoFillBackground(True)
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.frame.setObjectName("frame")
         self.pushButton = QtWidgets.QPushButton(self.frame)
         self.pushButton.setGeometry(QtCore.QRect(100, 190, 93, 28))
@@ -50,15 +58,21 @@ class Ui_Dialog(object):
         username = self.input_username.text()
         password = self.input_password.text()
         data = db.get_username_password()
-        login = False
         for i in range(0, len(data)):
             if username == data[i][0] and password == data[i][1]:
                 login = True
                 break
         if login:
-            QMessageBox.information(None, 'Success', 'Login Successful!')
+            self.open_main_window()
         else:
             QMessageBox.warning(None, 'Error', 'Incorrect Username or Password')
+
+
+    def open_main_window(self):
+        self.main_window = QtWidgets.QMainWindow()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self.main_window)
+        self.main_window.show()
 
 if __name__ == "__main__":
     import sys
