@@ -110,10 +110,16 @@ class Database:
         data = data.fetchall()
         return data
 
+    def get_table_info(self, name_table):
+        data = self.con.execute(f'PRAGMA table_info ({name_table})')
+        data = data.fetchall()
+        return data
+
     def get_username_password(self):
         data = self.con.execute('''SELECT username, password FROM Employee''')
         data = data.fetchall()
         return data
+
 
 
 data = {
