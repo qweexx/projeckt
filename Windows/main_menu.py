@@ -1,6 +1,5 @@
 from DataBase.database import db
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QTableWidgetItem
 
@@ -51,23 +50,9 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
-
         self.tabWidget.currentChanged.connect(self.change_tab)
-
-        self.current_index = self.tabWidget.currentIndex()
-        column = []
-        if self.current_index == 0:
-            table_column = db.get_table_info("'Order'")
-            self.tableWidget.setColumnCount(len(table_column))
-            for column_name in table_column:
-                column.append(column_name[1])
-            self.tableWidget.setHorizontalHeaderLabels(column)
-
-            table_item = db.get_table_data("'Order'")
-            self.tableWidget.setRowCount(len(table_item))
-            for i in range(0, len(table_item)):
-                for j in range(0, len(table_column)):
-                    self.tableWidget.setItem(i, j, QTableWidgetItem(f'{table_item[i][j]}'))
+        self.pushButton.clicked.connect(self.change_order)
+        self.pushButton_2.clicked.connect(self.add_order)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -85,18 +70,36 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Клиенты"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("MainWindow", "Товары/Склады"))
 
+    def load_first_tab(self):
+        table_column = ["ID", "Процесс", "Дата заказа", "Имя клиента", "Контакты", "Адресс", "Имя сотрудника", "Стоимость"]
+        self.tableWidget.setColumnCount(len(table_column))
+        self.tableWidget.setHorizontalHeaderLabels(table_column)
 
+        table_item = db.get_orders_with_full_fill_data()
+        self.tableWidget.setRowCount(len(table_item))
+        for i in range(0, len(table_item)):
+            for j in range(0, len(table_column)):
+                self.tableWidget.setItem(i, j, QTableWidgetItem(f'{table_item[i][j]}'))
 
     def change_tab(self, index):
         if self.current_index == 0:
             print(f"Current Tab Index: {index}")
+        print(self.tabWidget.currentIndex())
+
+    def add_order(self):
+        print('Open window for add order')
+
+    def change_order(self):
+        print('Open window for change order')
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
+    ui.load_first_tab()
     MainWindow.show()
     sys.exit(app.exec_())

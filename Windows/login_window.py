@@ -73,6 +73,7 @@ class Ui_Dialog(object):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.main_window)
         self.main_window.show()
+        self.ui.load_first_tab()
 
 if __name__ == "__main__":
     import sys

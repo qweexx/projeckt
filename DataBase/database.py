@@ -113,12 +113,27 @@ class Database:
     def get_table_info(self, name_table):
         data = self.con.execute(f'PRAGMA table_info ({name_table})')
         data = data.fetchall()
+        return [i[1] for i in data]
+
+    def get_orders_with_full_fill_data(self):
+        data = self.con.execute("""
+            SELECT o.id, o.process, o.date_order, c.name, c.phone_number, c.address, e.name,
+                SUM(g.price * cart.count) AS total_price
+            FROM 'Order' o
+            JOIN Client c ON o.id_client = c.id
+            JOIN Employee e ON o.id_employee = e.id
+            JOIN Cart cart ON o.id_cart = cart.id
+            JOIN Goods g ON cart.id_goods = g.id
+            GROUP BY o.id
+        """)
+        data = data.fetchall()
         return data
 
     def get_username_password(self):
         data = self.con.execute('''SELECT username, password FROM Employee''')
         data = data.fetchall()
         return data
+
 
 
 
