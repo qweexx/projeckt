@@ -129,6 +129,46 @@ class Database:
         data = data.fetchall()
         return data
 
+    def search_order(self, search_text):
+        search_text = f"%{search_text}%"
+        query = """
+            SELECT o.id, o.process, o.date_order, c.name, c.phone_number, c.address, e.name,
+                SUM(g.price * cart.count) AS total_price
+            FROM 'Order' o
+            JOIN Client c ON o.id_client = c.id
+            JOIN Employee e ON o.id_employee = e.id
+            JOIN Cart cart ON o.id_cart = cart.id
+            JOIN Goods g ON cart.id_goods = g.id
+            WHERE c.name LIKE ? OR c.phone_number LIKE ? OR e.name LIKE ?
+            GROUP BY o.id
+        """
+        data = self.con.execute(query, (search_text, search_text, search_text)).fetchall()
+        return data
+
+    def get_client_table(self):
+        data = self.con.execute("""
+            SELECT c.id, c.lastname, c.name, c.phone_number, c.email, c.address,
+                COUNT(o.id) AS count_order
+            FROM Client c
+            JOIN 'Order' o ON c.id_order = o.id
+            GROUP BY c.id
+        """)
+        data = data.fetchall()
+        return data
+
+    def search_client(self, search_text):
+        search_text = f"%{search_text}%"
+        query = """
+            SELECT c.id, c.lastname, c.name, c.phone_number, c.email, c.address,
+                COUNT(o.id) AS count_order
+            FROM Client c
+            JOIN 'Order' o ON c.id_order = o.id
+            WHERE c.name LIKE ? OR c.lastname LIKE ?
+            GROUP BY c.id
+        """
+        data = self.con.execute(query, (search_text, search_text)).fetchall()
+        return data
+
     def get_username_password(self):
         data = self.con.execute('''SELECT username, password FROM Employee''')
         data = data.fetchall()
