@@ -72,8 +72,9 @@ class Ui_Dialog(object):
         self.main_window = QtWidgets.QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.main_window)
-        self.main_window.show()
         self.ui.load_first_tab()
+        self.main_window.show()
+
 
 if __name__ == "__main__":
     import sys
